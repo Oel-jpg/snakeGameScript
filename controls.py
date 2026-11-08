@@ -50,10 +50,6 @@ def findMove(Board, prev):
     xdelta = head[0] - apple[0]
     ydelta = head[1] - apple[1]
 
-    print(head,apple)
-    print(xdelta,ydelta)
-
-    
 
     if xdelta > 0:
         move = "left"
