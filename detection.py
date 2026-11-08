@@ -3,6 +3,7 @@ import numpy as np
 
 cellsize = 35
 
+
 def readScreenshot(imagePath):
     imageColors = cv2.imread(f"{imagePath}")
     return imageColors
@@ -68,8 +69,6 @@ def findSnakeHead(colorsArray):
 
         eyePositions[cell] = eyePositions.get(cell,0) + 1
 
-    print(eyePositions)
-
     for cell, count in eyePositions.items():
 
         if count < 100:
@@ -80,6 +79,14 @@ def findSnakeHead(colorsArray):
     
         markedEyes.append((x,y))
     return markedEyes
+
+
+def noSnakeHead(prevMarkedHead):
+    markedHead = prevMarkedHead
+    return markedHead
+
+    
+
 
 
 def changeImage(imagePath,imageColors):

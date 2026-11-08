@@ -1,5 +1,8 @@
 import mss.tools
 import mss
+import cv2
+import numpy as np
+
 regionMonitor1 = {
     "top": 357,
     "left": 656,
@@ -8,8 +11,17 @@ regionMonitor1 = {
 }
 
 
+def captureGame(sct):
+    screenshot = sct.grab(regionMonitor1)
 
-def captureGame(Screen):
+    imageColors = cv2.cvtColor(
+        np.array(screenshot),
+        cv2.COLOR_BGRA2BGR
+    )
+
+    return imageColors
+
+def captureGameTest(Screen):
     if Screen == "Mac":
         pass
     else:

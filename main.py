@@ -1,18 +1,27 @@
 import capture
 import detection
+import controls
 
 import time
 import mss
 
+move = None
+prevMarkedHead = None
+board = None
+
 with mss.mss() as sct:
 
-    # while(True):
 
-        # time.sleep(5)
+    time.sleep(5)
 
-        # capture.captureGame("123")
 
-        imageColors = detection.readScreenshot("./screenshots/snake.png")
+    while(True):
+
+        # capture.captureGametest("123")
+
+        # imageColors = detection.readScreenshot("./screenshots/snake.png")
+
+        imageColors = capture.captureGame(sct)
 
         colorsArray = detection.colors(imageColors)
 
@@ -20,19 +29,32 @@ with mss.mss() as sct:
 
         markedSnake = detection.markSnakeBody(snakePosition)
 
-        for i in range(len(markedSnake)):
-            detection.makeCircle(imageColors,markedSnake[i],10, (255,255,255))
+        for i in range(len(markedSnake)): detection.makeCircle(imageColors,markedSnake[i],10, (255,255,255))
 
         markedHead = detection.findSnakeHead(colorsArray)
 
-        for i in range(len(markedHead)):
-            detection.makeCircle(imageColors,markedHead[i],5,(0,0,0))
+        for i in range(len(markedHead)): detection.makeCircle(imageColors,markedHead[i],5,(0,0,0))
 
         applePosition = detection.colorConditions(200,60,colorsArray,0,1,2)
 
-        appleCenterPosition = (round(applePosition[0].mean()),round(applePosition[1].mean()))
+        appleCenterPosition = [(round(applePosition[0].mean()),round(applePosition[1].mean()))]
 
-        detection.makeCircle(imageColors, appleCenterPosition, 10, (255,255,255))
+        for i in range(len(appleCenterPosition)): detection.makeCircle(imageColors,appleCenterPosition[i],5,(0,0,0))
 
         detection.changeImage("./screenshots/marked_snake.png",imageColors)
+
+        if len(markedHead) == 0 and board != None:
+            markedHead = detection.noSnakeHead(prevMarkedHead)
+
+        board = controls.BoardGrid(markedSnake,appleCenterPosition,markedHead)
+
+        prevMarkedHead = markedHead
+
+        move = controls.findMove(board, move)
+
+        if move is not None:
+            controls.move(move)
+
+
+
         
