@@ -1,13 +1,14 @@
 import capture
 import detection
 import controls
+import pathing
+
 
 import time
 import mss
 
 move = None
-prevMarkedHead = None
-board = None
+lastCommandHead = None
 
 with mss.mss() as sct:
 
@@ -17,7 +18,7 @@ with mss.mss() as sct:
 
     while(True):
 
-        # capture.captureGametest("123")
+        # capture.captureGameTest("123")
 
         # imageColors = detection.readScreenshot("./screenshots/snake.png")
 
@@ -37,24 +38,33 @@ with mss.mss() as sct:
 
         applePosition = detection.colorConditions(200,60,colorsArray,0,1,2)
 
+        if applePosition[0].size == 0:
+            continue
+
         appleCenterPosition = [(round(applePosition[0].mean()),round(applePosition[1].mean()))]
 
         for i in range(len(appleCenterPosition)): detection.makeCircle(imageColors,appleCenterPosition[i],5,(0,0,0))
 
         detection.changeImage("./screenshots/marked_snake.png",imageColors)
 
-        if len(markedHead) == 0 and board != None:
-            markedHead = detection.noSnakeHead(prevMarkedHead)
+        if len(markedHead) != 1:
+            continue
 
-        board = controls.BoardGrid(markedSnake,appleCenterPosition,markedHead)
+        head = pathing.Grid.normalizeToGrid(markedHead, controls.cellsize)[0]
+        apple = pathing.Grid.normalizeToGrid(appleCenterPosition, controls.cellsize)[0]
 
-        prevMarkedHead = markedHead
+        if head == lastCommandHead or head == apple:
+            continue
 
-        move = controls.findMove(board, move)
+        grid = pathing.Grid(controls.gridHeight, controls.gridWidth, controls.cellsize)
+        grid.setGrid(markedSnake, appleCenterPosition, markedHead)
+
+        path = grid.findPath()
+        move = controls.findmove(grid.head, path)
 
         if move is not None:
             controls.move(move)
-
+            lastCommandHead = head
 
 
         
