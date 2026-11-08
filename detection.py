@@ -26,8 +26,8 @@ def colorConditions(hardColorValue, colorMargin, colorsArray, colorNum1, colorNu
     position = [x,y]
     return position
     
-def makeCircle(imageColors, positionArray, radius):
-    cv2.circle(imageColors, positionArray, radius, (255,255,255), -1)
+def makeCircle(imageColors, positionArray, radius, color):
+    cv2.circle(imageColors, positionArray, radius, color, -1)
     return
 
 def markSnakeBody(snakePosition):
@@ -35,16 +35,14 @@ def markSnakeBody(snakePosition):
     snakeGrid = {}
 
     for i in range(len(snakePosition[0])):
-        snakePosition[0][i] = snakePosition[0][i]//cellsize
-        snakePosition[1][i] = snakePosition[1][i]//cellsize
 
-        cell = (snakePosition[0][i],snakePosition[1][i] )
+        cell = (snakePosition[0][i]//cellsize,snakePosition[1][i]//cellsize )
 
         snakeGrid[cell] = snakeGrid.get(cell,0) + 1
 
     for cell, count in snakeGrid.items():
 
-        if count < 100:
+        if count < 300:
             continue
 
         x = cell[0] * cellsize + cellsize//2
@@ -52,7 +50,39 @@ def markSnakeBody(snakePosition):
 
         markedSnake.append((x,y))
 
+
     return markedSnake
+
+def findSnakeHead(colorsArray):
+    eyePositions = {}
+    markedEyes = []
+    y, x = np.where(
+        (colorsArray[0] > 200) &
+        (colorsArray[1] > 200) &
+        (colorsArray[2] > 200)
+    )
+
+    for i in range(len(y)):
+
+        cell = (x[i]//cellsize,y[i]//cellsize)
+
+        eyePositions[cell] = eyePositions.get(cell,0) + 1
+
+    print(eyePositions)
+
+    for cell, count in eyePositions.items():
+
+        if count < 100:
+            continue
+        
+        x = cell[0] * cellsize + cellsize//2
+        y = cell[1] * cellsize + cellsize//2
+    
+        markedEyes.append((x,y))
+    return markedEyes
+
 
 def changeImage(imagePath,imageColors):
     cv2.imwrite(f"{imagePath}", imageColors)
+
+

@@ -6,22 +6,13 @@ import mss
 
 with mss.mss() as sct:
 
-    while(True):
+    # while(True):
 
-        time.sleep(5)
+        # time.sleep(5)
 
-        capture.captureGame("123")
+        # capture.captureGame("123")
 
         imageColors = detection.readScreenshot("./screenshots/snake.png")
-
-        colorsArray = detection.colors(imageColors)
-
-        applePosition = detection.colorConditions(200,60,colorsArray,0,1,2)
-
-        appleCenterPosition = (round(applePosition[0].mean()),round(applePosition[1].mean()))
-
-
-        detection.makeCircle(imageColors, appleCenterPosition, 10)
 
         colorsArray = detection.colors(imageColors)
 
@@ -30,12 +21,18 @@ with mss.mss() as sct:
         markedSnake = detection.markSnakeBody(snakePosition)
 
         for i in range(len(markedSnake)):
-            detection.makeCircle(imageColors,markedSnake[i],10)
+            detection.makeCircle(imageColors,markedSnake[i],10, (255,255,255))
+
+        markedHead = detection.findSnakeHead(colorsArray)
+
+        for i in range(len(markedHead)):
+            detection.makeCircle(imageColors,markedHead[i],5,(0,0,0))
+
+        applePosition = detection.colorConditions(200,60,colorsArray,0,1,2)
+
+        appleCenterPosition = (round(applePosition[0].mean()),round(applePosition[1].mean()))
+
+        detection.makeCircle(imageColors, appleCenterPosition, 10, (255,255,255))
 
         detection.changeImage("./screenshots/marked_snake.png",imageColors)
-
-    
-    
-
-
-    
+        

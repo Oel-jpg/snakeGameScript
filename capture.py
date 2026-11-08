@@ -1,6 +1,11 @@
 import mss.tools
 import mss
-regionMonitor1 = {"top": 332, "left": 656, "width": 595, "height": 525 }
+regionMonitor1 = {
+    "top": 357,
+    "left": 656,
+    "width": 595,
+    "height": 525
+}
 
 
 
